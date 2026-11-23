@@ -39,6 +39,10 @@ Chi tiết, cách đo và lưu ý: [docs/BENCHMARK.md](docs/BENCHMARK.md).
 ⭐ Zero-shot với VietNote ASR (không dùng phần nào của bộ này để train). hynt train trên VietMed_Labeled, Sub-GigaSpeech2
 và FLEURS (theo model card của họ). VietNote ASR có dùng tập train của FLEURS và VIVOS; bộ dev cùng nguồn với dữ liệu train.
 
+So với API thương mại và LLM nghe được (Gemini, GPT-audio, Soniox) trên tập con 400 câu: ngang Gemini 4 Argon ở câu pha
+tiếng Anh (9,54 so với 8,62; bản offline 8,40), nhưng kém xa ở giọng đọc chuẩn (6,45 so với 2,61). Xem
+[docs/BENCHMARK.md](docs/BENCHMARK.md#so-với-model-thương-mại-và-llm-nghe-được-tập-con-400-câu).
+
 **Nói thẳng:** model offline lớn hơn (hynt 150M) chính xác hơn ở tiếng Việt thuần, và trên GigaSpeech2 chúng tôi kém các
 model đã train trên bộ này. Điểm khác biệt của VietNote ASR là streaming, tiếng Anh trong câu và văn bản hoàn chỉnh.
 

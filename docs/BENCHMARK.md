@@ -40,6 +40,50 @@ ghi dữ liệu train.
 search 4 nhánh (modified beam search) cho các model transducer. Whisper/PhoWhisper chưa chạy trên GigaSpeech2. Bản int8
 mới đo trên FLEURS+VIVOS.
 
+## So với model thương mại và LLM nghe được (tập con 400 câu)
+
+Các API tính phí theo phút nên chỉ chạy trên tập con: 400 câu dev (100 câu mỗi nguồn, chọn ngẫu nhiên seed 0) và 400 câu
+FLEURS+VIVOS (200 + 200). Gemini và GPT-audio gọi qua OpenRouter (10–11/2026), Soniox qua API chính thức. Các model
+mở được chấm trên đúng các câu đó.
+
+**Dev pha tiếng Anh (400 câu)**
+
+| Hệ thống | Loại | SyER | Từ tiếng Anh nhận đúng |
+|---|---|---|---|
+| VietNote-Zipformer-78M offline | mở, CPU | **8,40** | 77,3% |
+| Gemini 4 Argon (Google) | API, LLM | 8,62 | **87,7%** |
+| **VietNote-Zipformer-78M-Streaming** | mở, CPU, streaming | 9,54 | 75,6% |
+| Soniox | API, ASR thương mại | 10,32 | 78,4% |
+| hynt Zipformer 150M | mở | 10,93 | 36,1% |
+| GPT-audio (OpenAI) | API, LLM | 11,67 | 79,1% |
+| Whisper large-v3 | mở, 1,5B | 15,03 | 66,7% |
+| GPT-audio-mini (OpenAI) | API, LLM | 15,15 | 71,4% |
+| Gemini 3.8 Flash (suy nghĩ thấp) | API, LLM | 16,51 | 81,1% |
+| PhoWhisper large | mở, 1,5B | 17,58 | 28,4% |
+
+**FLEURS + VIVOS (400 câu, giọng đọc)**
+
+| Hệ thống | SyER | FLEURS | VIVOS |
+|---|---|---|---|
+| Gemini 4 Argon | **2,61** | 2,21 | 3,85 |
+| Soniox | 4,04 | 3,61 | 5,38 |
+| hynt Zipformer 150M | 5,18 | 5,36 | 4,64 |
+| VietNote-Zipformer-78M offline | 5,32 | 5,29 | 5,43 |
+| PhoWhisper large | 5,66 | 5,93 | 4,84 |
+| **VietNote-Zipformer-78M-Streaming** | 6,45 | 6,48 | 6,37 |
+| GPT-audio | 7,24 | 3,37 | 19,15 |
+| Whisper large-v3 | 7,99 | 7,76 | 8,69 |
+| GPT-audio-mini | 8,47 | 4,87 | 19,55 |
+| Gemini 3.8 Flash (suy nghĩ thấp) | 12,02 | 14,41 | 4,64 |
+
+Lưu ý khi đọc:
+- Bộ dev cùng nguồn với dữ liệu train của VietNote nên nghiêng về VietNote; bảng FLEURS+VIVOS công bằng hơn, và ở đó
+  Gemini 4 Argon, Soniox vượt xa.
+- LLM hay "biên tập" lời nói (bỏ từ đệm, viết gọn) nên bị phạt khi chấm trên nhãn chép nguyên văn.
+- LLM có lỗi vận hành mà ASR chuyên dụng không có: GPT-audio trả lời như chatbot thay vì chép lời ở 11/400 câu
+  FLEURS+VIVOS ("Xin lỗi, tôi không nghe thấy…"), chủ yếu câu VIVOS rất ngắn; Gemini 3.8 Flash cắt cụt đầu ra ở 22/400 câu.
+- Chưa đo các API trên VietMed và GigaSpeech2.
+
 ## Theo vùng miền và điều kiện thu (VietMed)
 
 | | Số câu | VietNote streaming | hynt 30M streaming | hynt 150M | PhoWhisper |
