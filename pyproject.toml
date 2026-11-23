@@ -15,7 +15,7 @@ dev = ["pytest>=8"]
 
 [project.urls]
 Demo = "https://asr.vietnote.vn"
-Models = "https://huggingface.co/Kaisye/vietnote-asr"
+Models = "https://huggingface.co/Kaisye/VietNote-Zipformer-78M-Streaming"
 
 [build-system]
 requires = ["hatchling"]

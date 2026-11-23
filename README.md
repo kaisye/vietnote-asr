@@ -2,8 +2,10 @@
 
 **Nhận dạng giọng nói tiếng Việt pha tiếng Anh, chạy trực tiếp (streaming) trên CPU.**
 
+Model: **[VietNote-Zipformer-78M-Streaming](https://huggingface.co/Kaisye/VietNote-Zipformer-78M-Streaming)**, Zipformer transducer 78M tham số.
+
 [![Demo](https://img.shields.io/badge/demo-asr.vietnote.vn-0f6e56)](https://asr.vietnote.vn)
-[![Models](https://img.shields.io/badge/%F0%9F%A4%97%20models-Hugging%20Face-yellow)](https://huggingface.co/Kaisye/vietnote-asr)
+[![Models](https://img.shields.io/badge/%F0%9F%A4%97%20models-Hugging%20Face-yellow)](https://huggingface.co/Kaisye/VietNote-Zipformer-78M-Streaming)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
 Thử ngay trên trình duyệt: **https://asr.vietnote.vn** (nói vào micro, đọc kịch bản có sẵn, hoặc nghe đoạn mẫu).
@@ -25,7 +27,7 @@ Chi tiết, cách đo và lưu ý: [docs/BENCHMARK.md](docs/BENCHMARK.md).
 
 | Hệ thống | Loại | VietMed ⭐ | GigaSpeech2 ⭐ | FLEURS+VIVOS | Dev pha tiếng Anh | Từ tiếng Anh nhận đúng |
 |---|---|---|---|---|---|---|
-| **VietNote ASR (streaming)** | streaming, 77,7M | **13,87** | 10,65 | **6,88** | **9,62** | **75,5%** |
+| **VietNote-Zipformer-78M-Streaming** | streaming, 78M | **13,87** | 10,65 | **6,88** | **9,62** | **75,5%** |
 | hynt Zipformer 30M streaming | streaming, 30M | 14,30 | **8,87** | 7,73 | 12,58 | 24,7% |
 | Moonshine streaming tiny vi | streaming, 27M | 19,74 | 14,38 | 10,50 | 22,10 | 20,8% |
 | hynt Zipformer 150M | offline | 11,90 | 7,20 | 5,14 | 10,81 | 35,5% |
@@ -150,6 +152,7 @@ Một VM 4 vCPU phục vụ thoải mái 8–10 người nói cùng lúc (đo th
 
 ## Model
 
+- **Tên:** VietNote-Zipformer-78M-Streaming
 - **Kiến trúc:** Zipformer2 causal (cỡ M, 77,7M tham số), stateless transducer, pruned RNN-T loss.
 - **Token:** BPE 6.144, dùng chung tiếng Việt và tiếng Anh.
 - **Streaming:** chunk 32 frame (640 ms), nhìn lại 128 frame; xuất ONNX cho sherpa-onnx.
@@ -193,7 +196,7 @@ Code và trọng số: [Apache-2.0](LICENSE). Model dấu câu dựa trên
 
 ## English summary
 
-VietNote ASR is a **streaming Vietnamese–English (code-switching) speech recognizer** that runs on a CPU. It is a
+VietNote ASR (VietNote-Zipformer-78M-Streaming) is a **streaming Vietnamese–English (code-switching) speech recognizer** that runs on a CPU. It is a
 77.7M-parameter causal Zipformer transducer (icefall), exported to ONNX for sherpa-onnx, plus a text pipeline that turns
 the raw output into finished text: rule-based ITN for numbers, an XLM-R punctuation/casing model, and a hotword list for
 brand names. On our code-switching dev set it recognises ~75% of English words (2–5× other open Vietnamese models); on

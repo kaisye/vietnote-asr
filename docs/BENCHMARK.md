@@ -24,10 +24,10 @@ ghi dữ liệu train.
 
 | Hệ thống | Loại | Tham số | VietMed ⭐ | GigaSpeech2 ⭐ | FLEURS+VIVOS | Dev | Từ tiếng Anh nhận đúng (dev) |
 |---|---|---|---|---|---|---|---|
-| **VietNote ASR streaming fp32** | streaming | 77,7M | **13,87** | 10,65 | **6,88** | **9,62** | **75,5%** |
-| **VietNote ASR streaming int8** | streaming | 77,7M | – | – | 7,28 | – | – |
-| VietNote ASR offline fp32 | offline | 77,7M | 13,44 | 9,67 | 5,69 | 8,64 | 76,5% |
-| VietNote ASR offline int8 | offline | 77,7M | – | – | 6,09 | – | – |
+| **VietNote-Zipformer-78M-Streaming (fp32)** | streaming | 77,7M | **13,87** | 10,65 | **6,88** | **9,62** | **75,5%** |
+| **VietNote-Zipformer-78M-Streaming (int8)** | streaming | 77,7M | – | – | 7,28 | – | – |
+| VietNote-Zipformer-78M offline (fp32) | offline | 77,7M | 13,44 | 9,67 | 5,69 | 8,64 | 76,5% |
+| VietNote-Zipformer-78M offline (int8) | offline | 77,7M | – | – | 6,09 | – | – |
 | [hynt Zipformer 30M streaming](https://huggingface.co/hynt/Zipformer-30M-RNNT-Streaming-6000h) | streaming | 30M | 14,30 | **8,87** | 7,73 | 12,58 | 24,7% |
 | [Moonshine streaming tiny vi](https://huggingface.co/moonshine-ai/moonshine-streaming-tiny-vi) | streaming | 27M | 19,74 | 14,38 | 10,50 | 22,10 | 20,8% |
 | [hynt Zipformer 150M](https://huggingface.co/hynt/ZipFormer-150M-CR-CTC-RNNT-6000h) | offline | 153M | 11,90 | 7,20 | 5,14 | 10,81 | 35,5% |
@@ -66,8 +66,8 @@ RTF = thời gian xử lý / thời lượng âm thanh (càng nhỏ càng nhanh)
 |---|---|---|
 | VietNote ASR streaming int8 | 0,037 | 27× |
 | VietNote ASR streaming fp32 | 0,057 | 17× |
-| VietNote ASR offline int8 | 0,026 | 38× |
-| VietNote ASR offline fp32 | 0,047 | 21× |
+| VietNote-Zipformer-78M offline (int8) | 0,026 | 38× |
+| VietNote-Zipformer-78M offline (fp32) | 0,047 | 21× |
 | hynt Zipformer 30M streaming (fp16) | 0,037 | 27× |
 | hynt Zipformer 30M offline (int8) | 0,018 | 55× |
 

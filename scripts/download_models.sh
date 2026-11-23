@@ -3,7 +3,7 @@
 #   bash scripts/download_models.sh                 # everything
 #   bash scripts/download_models.sh streaming/int8  # one folder
 set -euo pipefail
-REPO=${HF_REPO:-Kaisye/vietnote-asr}
+REPO=${HF_REPO:-Kaisye/VietNote-Zipformer-78M-Streaming}
 cd "$(dirname "$0")/.."
 command -v hf >/dev/null || python3 -m pip install -q "huggingface_hub>=0.26"
 if [[ $# -gt 0 ]]; then
