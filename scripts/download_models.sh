@@ -5,7 +5,7 @@
 set -euo pipefail
 REPO=${HF_REPO:-Kaisye/vietnote-asr}
 cd "$(dirname "$0")/.."
-pip show huggingface_hub >/dev/null 2>&1 || pip install -q "huggingface_hub>=0.26"
+command -v hf >/dev/null || python3 -m pip install -q "huggingface_hub>=0.26"
 if [[ $# -gt 0 ]]; then
   hf download "$REPO" --local-dir models --include "$1/*" --include "tokens.txt" --include "bpe.model"
 else
