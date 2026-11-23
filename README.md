@@ -3,7 +3,7 @@
 **Nhận dạng giọng nói tiếng Việt pha tiếng Anh, chạy trực tiếp (streaming) trên CPU.**
 
 [![Demo](https://img.shields.io/badge/demo-asr.vietnote.vn-0f6e56)](https://asr.vietnote.vn)
-[![Models](https://img.shields.io/badge/%F0%9F%A4%97%20models-Hugging%20Face-yellow)](https://huggingface.co/kaisye/vietnote-asr)
+[![Models](https://img.shields.io/badge/%F0%9F%A4%97%20models-Hugging%20Face-yellow)](https://huggingface.co/Kaisye/vietnote-asr)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
 
 Thử ngay trên trình duyệt: **https://asr.vietnote.vn** (nói vào micro, đọc kịch bản có sẵn, hoặc nghe đoạn mẫu).
