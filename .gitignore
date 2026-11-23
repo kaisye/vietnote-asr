@@ -1,0 +1,8 @@
+models/
+__pycache__/
+*.pyc
+.venv/
+deploy/build/
+*.onnx
+*.pt
+models

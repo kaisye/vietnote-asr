@@ -1,0 +1,22 @@
+[Unit]
+Description=Vietnamese/English live captioning demo
+After=network-online.target
+
+[Service]
+User=asr
+WorkingDirectory=/opt/asr/app
+ExecStart=/opt/asr/venv/bin/python demo/server.py \
+  --model-dir models/asr --punct-dir models/punct --vad models/silero_vad.onnx \
+  --hotwords data/hotwords.txt --bpe-model models/bpe.model \
+  --threads 1 --workers 4 --host 127.0.0.1 --port 8765
+Restart=always
+RestartSec=3
+MemoryMax=8G
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/tmp
+
+[Install]
+WantedBy=multi-user.target

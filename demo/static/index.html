@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VietNote ASR</title>
+<meta name="description" content="Nhận dạng giọng nói tiếng Việt và tiếng Anh theo thời gian thực">
+<style>
+  :root {
+    --bg: #f6f6f3; --panel: #ffffff; --ink: #1b1b1a; --muted: #6b6b66; --line: #e3e2dc; --soft: #f0efe9;
+    --accent: #0f6e56; --accent-ink: #ffffff; --accent-soft: #e4f1ec; --danger: #b3261e; --partial: #8a8a84;
+    --ok: #1f7a3a; --miss: #b3261e; --miss-bg: #fde8e6; --sub: #8a5a00; --sub-bg: #fff3d6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #141413; --panel: #1d1d1b; --ink: #ecebe6; --muted: #a09f98; --line: #33322e;
+      --soft: #252522; --accent: #3fb68f; --accent-ink: #0d1a15; --accent-soft: #1d2e27; --danger: #f2867d; --partial: #85847d;
+      --ok: #7bd88f; --miss: #ffb4ab; --miss-bg: #4a1f1b; --sub: #ffd27a; --sub-bg: #3d3110; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink);
+    font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 880px; margin: 0 auto; padding: 22px 16px 48px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .brand h1 { font-size: 22px; margin: 0; letter-spacing: -0.01em; }
+  .brand p { margin: 2px 0 0; color: var(--muted); font-size: 14px; }
+  .pill { font-size: 12px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; background: var(--panel); }
+  .pill.on::before { content: ""; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); margin-right: 6px; vertical-align: 1px; }
+  nav.tabs { display: flex; gap: 4px; margin: 18px 0 14px; background: var(--soft); padding: 4px; border-radius: 10px; overflow-x: auto; }
+  nav.tabs button { flex: 1; white-space: nowrap; border: 0; background: transparent; padding: 8px 12px; border-radius: 7px; font-weight: 600; color: var(--muted); }
+  nav.tabs button[aria-selected="true"] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+  button { font: inherit; font-size: 15px; border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+  button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  button.stop { background: var(--danger); color: #fff; border-color: var(--danger); }
+  button:disabled { opacity: .45; cursor: default; }
+  select, input[type=text] { font: inherit; font-size: 15px; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); }
+  .panel[hidden] { display: none; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; }
+  .lead { color: var(--muted); font-size: 14px; margin: 0 0 12px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .chips button { font-size: 14px; padding: 6px 12px; border-radius: 999px; }
+  .chips button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); font-weight: 600; }
+  .read { font-size: 21px; line-height: 1.6; margin: 4px 0 8px; }
+  .hint { color: var(--muted); font-size: 13px; }
+  .bar { display: flex; gap: 8px; align-items: center; margin: 14px 0 10px; flex-wrap: wrap; }
+  .meter { flex: 1; min-width: 100px; height: 8px; background: var(--line); border-radius: 4px; overflow: hidden; }
+  .meter > div { height: 100%; width: 0; background: var(--accent); transition: width 80ms linear; }
+  .err { color: var(--danger); font-size: 14px; min-height: 1.2em; }
+  #box { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;
+    min-height: 180px; max-height: 50vh; overflow-y: auto; font-size: 18px; }
+  .seg { margin: 0 0 10px; }
+  .seg time { color: var(--muted); font-size: 12px; font-variant-numeric: tabular-nums; margin-right: 8px; }
+  .seg .raw { display: none; color: var(--muted); font-size: 13px; }
+  body.showraw .seg .raw { display: block; }
+  .seg .who { font-weight: 600; margin-right: 6px; color: var(--accent); }
+  .seg .who.unk { color: var(--muted); }
+  .seg .tts { color: var(--accent); font-size: 12px; margin-left: 8px; }
+  #partial { color: var(--partial); margin: 0; }
+  .empty { color: var(--muted); font-size: 15px; }
+  .result { margin-top: 12px; border-top: 1px dashed var(--line); padding-top: 10px; }
+  .result .score { font-weight: 700; font-size: 18px; }
+  .result .score small { font-weight: 400; color: var(--muted); font-size: 13px; margin-left: 6px; }
+  .diff { font-size: 17px; line-height: 1.9; margin-top: 4px; }
+  .diff .ok { color: var(--ink); }
+  .diff .del { color: var(--miss); background: var(--miss-bg); text-decoration: line-through; border-radius: 3px; padding: 0 2px; }
+  .diff .sub { color: var(--sub); background: var(--sub-bg); border-radius: 3px; padding: 0 2px; }
+  .diff .ins { color: var(--sub); background: var(--sub-bg); border-radius: 3px; padding: 0 2px; font-style: italic; }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin-top: 6px; }
+  .legend span span { font-size: 12px; }
+  .samples { display: grid; gap: 10px; }
+  .sample { display: grid; gap: 6px; }
+  .sample .top { display: flex; align-items: center; gap: 10px; justify-content: space-between; flex-wrap: wrap; }
+  .sample .top b { font-size: 15px; }
+  .sample .ref { color: var(--muted); font-size: 15px; }
+  .sample details.ref summary { cursor: pointer; color: var(--ink); }
+  .sample a { color: var(--accent); }
+  .sample .got { font-size: 16px; }
+  .upload { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 10px 0 0; }
+  .stat { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+  .stat b { display: block; font-size: 16px; font-variant-numeric: tabular-nums; }
+  .stat span { color: var(--muted); font-size: 12px; }
+  details.adv { margin-top: 12px; color: var(--muted); font-size: 14px; }
+  details.adv summary { cursor: pointer; }
+  details.adv .opts { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
+  .note { color: var(--muted); font-size: 12px; margin-top: 22px; border-top: 1px solid var(--line); padding-top: 10px; }
+  .note p { margin: 4px 0; }
+  @media (max-width: 560px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } #box { font-size: 16px; } .read { font-size: 19px; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand">
+      <h1>VietNote ASR</h1>
+      <p>Nhận dạng giọng nói tiếng Việt – tiếng Anh, ra chữ ngay khi bạn nói</p>
+    </div>
+    <span class="pill" id="info">đang kết nối…</span>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="free" aria-selected="true">Nói tự do</button>
+    <button role="tab" data-tab="script" aria-selected="false">Đọc kịch bản</button>
+    <button role="tab" data-tab="sample" aria-selected="false">Nghe mẫu</button>
+  </nav>
+
+  <section class="panel" id="p-free">
+    <p class="lead">Bấm <b>Bắt đầu nói</b>, cho phép dùng micro và nói bình thường. Chữ xám là phần đang nghe, chữ đen là câu đã chốt (có dấu câu, số viết bằng chữ số).</p>
+  </section>
+
+  <section class="panel" id="p-script" hidden>
+    <p class="lead">Chọn một kịch bản, bấm <b>Bắt đầu đọc</b>, đọc to rồi bấm <b>Dừng</b>. Máy so kết quả với bản gốc và tô màu chỗ sai.</p>
+    <div class="chips" id="chips"></div>
+    <div class="card">
+      <div class="hint" id="s-kind"></div>
+      <p class="read" id="s-read"></p>
+      <div class="hint" id="s-tip"></div>
+      <div class="result" id="s-result" hidden></div>
+    </div>
+  </section>
+
+  <section class="panel" id="p-sample" hidden>
+    <p class="lead">Phát một đoạn ghi âm có sẵn: âm thanh được gửi lên máy chủ như khi bạn nói, chữ hiện ra ngay trong lúc phát.</p>
+    <div class="samples" id="samples"></div>
+    <div class="card upload" style="margin-top:10px">
+      <b style="font-size:15px">Thử file của bạn</b>
+      <input type="file" id="file" accept="audio/*,video/*">
+      <span class="hint">Tối đa khoảng 5 phút. File được giải mã trong trình duyệt, máy chủ chỉ nhận âm thanh để ra chữ.</span>
+    </div>
+  </section>
+
+  <div class="bar">
+    <button id="start" class="primary">Bắt đầu nói</button>
+    <button id="pause" hidden>⏸ Tạm dừng</button>
+    <button id="stop" class="stop" disabled>Dừng</button>
+    <button id="clear">Xóa</button>
+    <button id="save">Tải transcript</button>
+    <div class="meter" title="Mức âm lượng"><div id="level"></div></div>
+  </div>
+  <div class="err" id="err"></div>
+
+  <div id="box">
+    <div id="segs"><p class="empty" id="empty">Kết quả sẽ hiện ở đây.</p></div>
+    <p id="partial"></p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="s-dur">0:00</b><span>Thời lượng</span></div>
+    <div class="stat"><b id="s-chunk">–</b><span>Xử lý mỗi đoạn 640 ms</span></div>
+    <div class="stat"><b id="s-rtf">–</b><span>Tỉ lệ thời gian xử lý</span></div>
+    <div class="stat"><b id="s-punct">–</b><span>Thêm dấu câu</span></div>
+  </div>
+
+  <details class="adv">
+    <summary>Tùy chọn nâng cao</summary>
+    <div class="opts">
+      <label><input type="checkbox" id="raw"> Hiện bản thô (trước khi thêm dấu, đổi số)</label>
+      <label>Chỉ nhận giọng to hơn <input type="range" id="gate" min="-60" max="-20" step="1" value="-35" style="vertical-align:middle">
+        <b id="gate-v">-35</b> dB · micro <b id="db">–</b> dB</label>
+      <select id="voice" title="Đọc lại bằng giọng TTS"><option value="">Không đổi giọng</option></select>
+    </div>
+    <div class="opts" id="spkbar" style="display:none">
+      <input type="text" id="spkname" placeholder="Tên người nói" style="width:180px">
+      <button id="enroll">Đăng ký giọng</button>
+      <span id="spkinfo"></span>
+    </div>
+  </details>
+
+  <footer class="note">
+    <p id="note">Bản thử nghiệm, chạy trên CPU. Âm thanh của bạn chỉ được xử lý trong bộ nhớ để ra chữ, máy chủ không lưu lại.
+      Kết quả có thể sai, nhất là tên riêng và thuật ngữ tiếng Anh.</p>
+    <p id="credit"></p>
+  </footer>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (t) => t.replace(/[&<>"]/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[m]));
+const fmt = (s) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
+
+// ---------- test scripts: read = what to say, expect = what the system should write ----------
+const SCRIPTS = [
+  { kind: "Số tiền, phần trăm", read: "Tháng này doanh thu đạt 1,5 tỷ đồng, tăng 12% so với cùng kỳ. Giá vé là 250.000 đồng một người." },
+  { kind: "Giờ, ngày, số điện thoại", read: "Hẹn anh 7 giờ 30 sáng thứ Hai, ngày 15 tháng 12. Số điện thoại của em là 0912 345 678.",
+    tip: "Đọc số điện thoại từng chữ số, ngắt nhịp tự nhiên." },
+  { kind: "Năm, số lớn", read: "Năm 2025 công ty bán được 38.000 xe điện, chiếm khoảng 20% thị phần." },
+  { kind: "Thương hiệu", read: "Tôi vừa đặt xe Grab rồi ghé Highlands Coffee mua cà phê. Tuần sau bay Vietjet vào Sài Gòn xem xe VinFast.",
+    tip: "Đọc tên theo cách bạn vẫn nói hằng ngày (ví dụ “vin phát”, “việt dét”)." },
+  { kind: "Tiếng Anh ở công sở", read: "Sáng nay team có meeting về deadline của project, em sẽ gửi file report qua email trước 5 giờ chiều." },
+  { kind: "Thuật ngữ công nghệ", read: "Model này được train trên GPU, mỗi epoch mất khoảng 2 tiếng, sau đó mình deploy lên server.",
+    tip: "Khó: thuật ngữ tiếng Anh nói nhanh là điểm yếu hiện tại của mô hình." },
+  { kind: "Đọc nhầm rồi sửa", read: "Chuyển khoản cho chị ba… à không, bốn triệu rưỡi nhé.", expect: "Chuyển khoản cho chị 4,5 triệu nhé.",
+    tip: "Đọc cả phần nhầm. Kết quả đúng phải bỏ “ba à không” và ghi “4,5 triệu”." },
+];
+let script = SCRIPTS[0];
+function showScript(s) {
+  script = s;
+  $("s-kind").textContent = s.kind;
+  $("s-read").textContent = s.read;
+  $("s-tip").textContent = (s.tip ? s.tip + " " : "") + (s.expect ? `Kết quả mong đợi: “${s.expect}”` : "Số viết bằng chữ số thì đọc như bình thường.");
+  $("s-result").hidden = true;
+  document.querySelectorAll("#chips button").forEach((b, i) => b.setAttribute("aria-pressed", SCRIPTS[i] === s));
+}
+SCRIPTS.forEach((s) => { const b = document.createElement("button"); b.textContent = s.kind; b.onclick = () => showScript(s); $("chips").appendChild(b); });
+showScript(SCRIPTS[0]);
+
+// ---------- comparison: normalise both texts, then word-level edit distance ----------
+function words(t) {
+  t = t.normalize("NFC").toLowerCase().replace(/[“”"()…!?;:–—]/g, " ")
+    .replace(/(?<![\d/])(\d{1,2})\/(\d{1,2})(?![\d/])/g, (m, d, mo) => +d <= 31 && +mo <= 12 ? `${d} tháng ${mo}` : m);  // 19/11 = 19 tháng 11
+  const out = [];
+  for (let w of t.split(/\s+/)) {
+    w = w.replace(/^[.,]+|[.,]+$/g, "");
+    if (/^\d{1,3}(\.\d{3})+$/.test(w)) w = w.replace(/\./g, "");      // 250.000 = 250000
+    if (!w) continue;
+    if (/^\d+$/.test(w) && out.length && /^\d+$/.test(out[out.length - 1])) out[out.length - 1] += w;  // 0912 345 678
+    else out.push(w);
+  }
+  return out;
+}
+function align(r, h) {
+  const n = r.length, m = h.length, d = Array.from({ length: n + 1 }, (_, i) => [i, ...Array(m).fill(0)]);
+  for (let j = 1; j <= m; j++) d[0][j] = j;
+  for (let i = 1; i <= n; i++) for (let j = 1; j <= m; j++)
+    d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (r[i - 1] === h[j - 1] ? 0 : 1));
+  const ops = []; let i = n, j = m;
+  while (i || j) {
+    if (i && j && d[i][j] === d[i - 1][j - 1] + (r[i - 1] === h[j - 1] ? 0 : 1)) { ops.push([r[i - 1] === h[j - 1] ? "ok" : "sub", r[i - 1], h[j - 1]]); i--; j--; }
+    else if (i && d[i][j] === d[i - 1][j] + 1) { ops.push(["del", r[i - 1], null]); i--; }
+    else { ops.push(["ins", null, h[j - 1]]); j--; }
+  }
+  return ops.reverse();
+}
+function renderCompare(el, target, got) {
+  const r = words(target), ops = align(r, words(got));
+  const ok = ops.filter((o) => o[0] === "ok").length, err = ops.filter((o) => o[0] !== "ok").length;
+  const html = ops.map(([t, a, b]) => t === "ok" ? `<span class="ok">${esc(a)}</span>`
+    : t === "sub" ? `<span class="del">${esc(a)}</span> <span class="sub">${esc(b)}</span>`
+    : t === "del" ? `<span class="del">${esc(a)}</span>` : `<span class="ins">+${esc(b)}</span>`).join(" ");
+  const acc = r.length ? Math.max(0, 1 - err / r.length) : 0;
+  el.innerHTML = `<div class="score">Đúng ${ok}/${r.length} từ <small>độ chính xác ${(acc * 100).toFixed(0)}%</small></div>
+    <div class="diff">${html || '<span class="hint">Không nghe được gì.</span>'}</div>
+    <div class="legend"><span><span class="del">gạch đỏ</span> thiếu hoặc sai</span><span><span class="sub">vàng</span> máy ghi thay vào</span><span><span class="ins">+nghiêng</span> máy ghi thừa</span></div>`;
+  el.hidden = false;
+}
+
+// ---------- tabs ----------
+let tab = "free";
+const startLabel = { free: "Bắt đầu nói", script: "Bắt đầu đọc", sample: "Bắt đầu nói" };
+document.querySelectorAll("nav.tabs button").forEach((b) => b.onclick = () => {
+  if (session) return;  // keep the tab while recording
+  tab = b.dataset.tab;
+  document.querySelectorAll("nav.tabs button").forEach((x) => x.setAttribute("aria-selected", x === b));
+  for (const t of ["free", "script", "sample"]) $("p-" + t).hidden = t !== tab;
+  $("start").textContent = startLabel[tab];
+});
+
+// ---------- server info ----------
+fetch("/info").then((r) => r.json()).then((i) => {
+  if (i.stores_audio) $("note").textContent = "Bản thử nghiệm. Máy chủ này đang LƯU âm thanh các phiên để gỡ lỗi; đừng nói thông tin riêng tư.";
+  for (const v of i.voices || []) { const o = document.createElement("option"); o.value = v; o.textContent = "Giọng: " + v; $("voice").appendChild(o); }
+  if (!(i.voices || []).length) $("voice").style.display = "none";
+  if (i.speakers) { $("spkbar").style.display = "flex"; $("spkinfo").textContent = i.speakers.length ? "Đã đăng ký: " + i.speakers.join(", ") : "Chưa đăng ký ai"; }
+  $("info").classList.add("on");
+  $("info").textContent = `sẵn sàng · dấu câu ${i.punct ? "bật" : "tắt"} · ${(i.hotwords || []).length} tên riêng`;
+}).catch(() => { $("info").textContent = "không kết nối được máy chủ"; });
+
+// ---------- sample clips ----------
+fetch("samples/samples.json").then((r) => r.json()).then((d) => {
+  $("credit").textContent = d.credit;
+  for (const s of d.samples) {
+    const c = document.createElement("div"); c.className = "card sample";
+    const dur = s.duration >= 90 ? `${Math.floor(s.duration / 60)} phút ${Math.round(s.duration % 60)} giây` : `${s.duration.toFixed(0)} giây`;
+    const ref = s.text.length > 300
+      ? `<details class="ref"><summary>Lời gốc (${s.text.split(/\s+/).length} từ)</summary>${esc(s.text)}</details>`
+      : `<div class="ref">Lời gốc: ${esc(s.text)}</div>`;
+    const src = s.source ? `<div class="hint">${esc(s.source)}${s.source_url ? ` <a href="${esc(s.source_url)}" target="_blank" rel="noopener">Xem video gốc</a>` : ""}</div>` : "";
+    const dl = s.downloads ? `<div class="hint"><a href="${esc(s.downloads.mp3)}" download>Tải mp3</a> · <a href="${esc(s.downloads.script)}" download>Tải lời gốc (.txt)</a></div>` : "";
+    c.innerHTML = `<div class="top"><b>${esc(s.title)}</b><span class="hint">${dur}</span>
+      <button class="primary">${PLAY}</button></div>
+      ${ref}${src}${dl}<div class="result" hidden></div>`;
+    const btn = c.querySelector("button");
+    btn.onclick = () => (session && session.btn === btn) ? session.toggle() : runFile(s.file, s.text, c.querySelector(".result"), btn);
+    $("samples").appendChild(c);
+  }
+}).catch(() => { $("samples").innerHTML = '<p class="hint">Chưa có âm thanh mẫu.</p>'; });
+$("file").onchange = (e) => { const f = e.target.files[0]; if (f) runFile(f, null, null); };
+
+// ---------- transcript ----------
+const lines = [];
+let playing = 0;  // mic frames are replaced by silence while TTS audio plays, so it is not re-recognised
+const queue = [];
+function playNext() {
+  if (playing || !queue.length) return;
+  const a = new Audio(queue.shift().url); playing = 1;
+  const done = () => setTimeout(() => { playing = 0; playNext(); }, 250);
+  a.onended = done; a.onerror = done; a.play().catch(done);
+}
+function addFinal(m) {
+  $("empty")?.remove();
+  if (m.replace && lines.length) { lines.pop(); $("segs").lastElementChild?.remove(); }
+  lines.push(m);
+  const p = document.createElement("p"); p.className = "seg";
+  p.innerHTML = `<time>${fmt(m.start)}</time><span class="who"></span><span class="t"></span><span class="raw"></span>`;
+  if (m.speaker) { const w = p.querySelector(".who"); w.textContent = m.speaker === "?" ? `Người lạ? (${m.best} ${m.score})` : `${m.speaker} (${m.score}):`; if (m.speaker === "?") w.classList.add("unk"); }
+  p.querySelector(".t").textContent = m.text; p.querySelector(".raw").textContent = m.raw;
+  $("segs").appendChild(p);
+  if (m.punct_ms) $("s-punct").textContent = `${Math.round(m.punct_ms)} ms`;
+  $("box").scrollTop = $("box").scrollHeight;
+}
+
+// ---------- one recognition session over the WebSocket ----------
+let session = null;  // {ws, stop(), onDone}
+function openSocket(onDone) {
+  return new Promise((resolve, reject) => {
+    const ws = new WebSocket(`${location.protocol === "https:" ? "wss" : "ws"}://${location.host}/ws`);
+    ws.binaryType = "arraybuffer";
+    const first = lines.length;
+    ws.onmessage = (ev) => {
+      const m = JSON.parse(ev.data);
+      if (m.type === "partial") { $("partial").textContent = m.text; $("box").scrollTop = $("box").scrollHeight; }
+      else if (m.type === "final") addFinal(m);
+      else if (m.type === "enrolled") { $("enroll").textContent = "Đăng ký giọng"; enrolling = false;
+        $("spkinfo").textContent = m.error ? m.error : `Đã lưu ${m.name} (${m.seconds}s). Đã đăng ký: ${m.names.join(", ")}`; }
+      else if (m.type === "tts") { queue.push(m); playNext(); }
+      else if (m.type === "stats") {
+        $("s-dur").textContent = fmt(m.audio_s); $("s-chunk").textContent = `${m.chunk_ms.toFixed(0)} ms`;
+        $("s-rtf").textContent = (m.compute_s / Math.max(m.audio_s, 0.001)).toFixed(3);
+      } else if (m.type === "stopped") { ws.close(); onDone(lines.slice(first).map((l) => l.text).join(" ")); }
+    };
+    ws.onclose = () => { $("partial").textContent = ""; };
+    ws.onopen = () => { ws.send("voice:" + $("voice").value); ws.send("gate:" + $("gate").value); resolve(ws); };
+    ws.onerror = () => reject(new Error("Không kết nối được máy chủ"));
+  });
+}
+function busy(on) {
+  $("start").disabled = on; $("stop").disabled = !on;
+  document.querySelectorAll(".sample button, #file").forEach((b) => b.disabled = on);
+  if (!on) $("pause").hidden = true;
+}
+function finish() { session = null; busy(false); $("level").style.width = "0"; }
+
+const workletSrc = `
+class Grab extends AudioWorkletProcessor {
+  constructor() { super(); this.ratio = sampleRate / 16000; this.pos = 0; this.buf = []; }
+  process(inputs) {
+    const ch = inputs[0] && inputs[0][0];
+    if (!ch) return true;
+    let peak = 0;
+    for (let i = 0; i < ch.length; i++) peak = Math.max(peak, Math.abs(ch[i]));
+    while (this.pos < ch.length) {
+      const i = Math.floor(this.pos), f = this.pos - i;
+      const a = ch[i], b = i + 1 < ch.length ? ch[i + 1] : a;
+      this.buf.push(a + (b - a) * f);
+      this.pos += this.ratio;
+    }
+    this.pos -= ch.length;
+    if (this.buf.length >= 1600) { this.port.postMessage({ pcm: new Float32Array(this.buf), peak }); this.buf = []; }
+    return true;
+  }
+}
+registerProcessor("grab", Grab);`;
+
+async function startMic() {
+  $("err").textContent = "";
+  const target = tab === "script" ? (script.expect || script.read) : null;
+  if (target) $("s-result").hidden = true;
+  let stream;
+  try {
+    const raw = new URLSearchParams(location.search).has("raw");
+    stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: !raw, noiseSuppression: !raw, autoGainControl: false } });
+  } catch (e) { $("err").textContent = "Không mở được micro: " + e.message; return; }
+  busy(true);
+  let ws;
+  try { ws = await openSocket((got) => { finish(); if (target) renderCompare($("s-result"), target, got); }); }
+  catch (e) { $("err").textContent = e.message; stream.getTracks().forEach((t) => t.stop()); finish(); return; }
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  if (ctx.state === "suspended") await ctx.resume().catch(() => {});
+  await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([workletSrc], { type: "application/javascript" })));
+  const src = ctx.createMediaStreamSource(stream), node = new AudioWorkletNode(ctx, "grab");
+  node.port.onmessage = (e) => {
+    if (ws.readyState === 1) ws.send(playing ? new Float32Array(e.data.pcm.length).buffer : e.data.pcm.buffer);
+    $("level").style.width = `${Math.min(100, e.data.peak * 140)}%`;
+    const pcm = e.data.pcm; let ss = 0; for (let i = 0; i < pcm.length; i++) ss += pcm[i] * pcm[i];
+    const db = 10 * Math.log10(ss / pcm.length + 1e-12);
+    if (db > -90) $("db").textContent = db.toFixed(0);
+  };
+  src.connect(node);
+  session = { ws, stop() { src.disconnect(); node.disconnect(); ctx.close(); stream.getTracks().forEach((t) => t.stop()); if (ws.readyState === 1) ws.send("stop"); } };
+}
+
+// A clip or the user's file: decode and resample in the browser, play it, and stream it in real time.
+// A clip or the user's file. Playback uses an <audio> element unlocked inside the tap itself: on phones (iOS Safari
+// especially) Web Audio started after an await stays silent, and the ringer switch mutes Web Audio but not <audio>.
+// The PCM is decoded separately and sent to the server in step with the element's playback position.
+const player = new Audio();
+player.preload = "auto";
+player.setAttribute("playsinline", "");
+const PLAY = "▶ Phát và nhận dạng";
+async function runFile(file, target, resultEl, btn) {
+  if (session) return;
+  $("err").textContent = "";
+  const url = typeof file === "string" ? file : URL.createObjectURL(file);
+  player.src = url;
+  player.muted = true;
+  const unlock = player.play().then(() => player.pause()).catch(() => {});  // still inside the user's tap
+  let pcm;
+  try {
+    const bytes = typeof file === "string" ? await (await fetch(file)).arrayBuffer() : await file.arrayBuffer();
+    const tmp = new (window.AudioContext || window.webkitAudioContext)();
+    const buf = await new Promise((ok, bad) => tmp.decodeAudioData(bytes, ok, bad)); tmp.close();
+    const max = Math.min(buf.duration, 330);
+    const off = new OfflineAudioContext(1, Math.ceil(max * 16000), 16000);
+    const src = off.createBufferSource(); src.buffer = buf; src.connect(off.destination); src.start();
+    pcm = (await off.startRendering()).getChannelData(0);
+  } catch (e) { $("err").textContent = "Không đọc được file âm thanh: " + (e && e.message || e); return; }
+  if (resultEl) resultEl.hidden = true;
+  busy(true);
+  let ws;
+  try { ws = await openSocket((got) => { finish(); if (target && resultEl) renderCompare(resultEl, target, got); }); }
+  catch (e) { $("err").textContent = e.message; finish(); return; }
+  ws.send("gate:-90");  // recordings can be quiet; do not gate them like a far-field microphone
+  await unlock;
+  player.currentTime = 0;
+  player.muted = false;
+  try { await player.play(); }
+  catch (e) { $("err").textContent = "Trình duyệt chặn phát âm thanh; chữ vẫn được nhận dạng, hãy bấm lại nếu muốn nghe."; }
+  let i = 0, stopped = false, paused = false, clock = 0, last = performance.now();
+  const label = () => {
+    const t = paused ? "▶ Tiếp tục" : "⏸ Tạm dừng";
+    $("pause").textContent = t; if (btn) btn.textContent = t;
+  };
+  if (btn) btn.disabled = false;
+  $("pause").hidden = false; label();
+  // Pausing stops both the sound and the audio sent to the server; the session stays open until the end or Dừng.
+  const toggle = () => {
+    if (stopped) return;
+    paused = !paused;
+    if (paused) player.pause(); else player.play().catch(() => {});
+    label();
+  };
+  const end = () => {
+    if (stopped) return; stopped = true; clearInterval(timer); player.pause();
+    if (btn) btn.textContent = PLAY;
+    if (typeof file !== "string") URL.revokeObjectURL(url);
+    if (ws.readyState === 1) ws.send("stop");
+  };
+  const timer = setInterval(() => {
+    // Follow the audio element while it plays; if it is blocked or stalls, fall back to the wall clock.
+    const now = performance.now();
+    if (!paused) clock += now - last;
+    last = now;
+    if (paused) return;
+    const pos = !player.paused && player.currentTime > 0 ? player.currentTime : clock / 1000;
+    const upto = Math.min(pcm.length, Math.floor(pos * 16000));
+    while (i + 1600 <= upto || (i < pcm.length && upto >= pcm.length)) {
+      const frame = pcm.slice(i, i + 1600); i += 1600;
+      if (ws.readyState === 1) ws.send(frame.buffer);
+      let peak = 0; for (let k = 0; k < frame.length; k++) peak = Math.max(peak, Math.abs(frame[k]));
+      $("level").style.width = `${Math.min(100, peak * 140)}%`;
+    }
+    if (i >= pcm.length) end();
+  }, 50);
+  player.onended = () => { /* the timer sends what is left, then stops */ };
+  session = { ws, stop: end, toggle, btn };
+}
+
+$("start").onclick = () => startMic().catch((e) => { $("err").textContent = e.message; if (session) session.stop(); else finish(); });
+$("stop").onclick = () => { if (session) session.stop(); };
+$("pause").onclick = () => { if (session && session.toggle) session.toggle(); };
+$("clear").onclick = () => { lines.length = 0; $("segs").innerHTML = ""; $("partial").textContent = ""; };
+$("voice").onchange = () => { if (session && session.ws.readyState === 1) session.ws.send("voice:" + $("voice").value); };
+$("gate").oninput = () => { $("gate-v").textContent = $("gate").value; if (session && session.ws.readyState === 1) session.ws.send("gate:" + $("gate").value); };
+let enrolling = false;
+$("enroll").onclick = () => {
+  if (!session) { $("spkinfo").textContent = "Bấm “Bắt đầu nói” trước"; return; }
+  if (!enrolling) {
+    const n = $("spkname").value.trim(); if (!n) { $("spkinfo").textContent = "Nhập tên trước"; return; }
+    session.ws.send("enroll:" + n); enrolling = true;
+    $("enroll").textContent = "Xong (đã nói 5–10 giây)"; $("spkinfo").textContent = `Đang ghi giọng ${n}… hãy nói tự nhiên`;
+  } else session.ws.send("enroll_done");
+};
+$("raw").onchange = (e) => document.body.classList.toggle("showraw", e.target.checked);
+$("save").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lines.map((l) => `[${fmt(l.start)}] ${l.text}`).join("\n")], { type: "text/plain;charset=utf-8" }));
+  a.download = "transcript.txt"; a.click();
+};
+</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+{
+ "credit": "Âm thanh mẫu: FLEURS (Google), giấy phép CC BY 4.0 — https://huggingface.co/datasets/google/fleurs",
+ "samples": [
+  {
+   "id": "fleurs-1705-4826803853630616752",
+   "title": "Ngày, tháng, năm",
+   "file": "samples/fleurs-1705-4826803853630616752.mp3?v=2",
+   "text": "Ngày 15 tháng 8 năm 1940, quân Đồng minh mở \"Chiến dịch Dragoon\", xâm chiếm miền nam nước Pháp.",
+   "duration": 8.16
+  },
+  {
+   "id": "fleurs-1951-10531614475822620460",
+   "title": "Năm, địa danh nước ngoài",
+   "file": "samples/fleurs-1951-10531614475822620460.mp3?v=2",
+   "text": "Năm 2002, thành phố Goma bị san bằng bởi núi lửa Nyiragongo. Thảm họa núi lửa phun trào này đã chôn vùi phần lớn thành phố này, đặc biệt là khu vực trung tâm thành phố.",
+   "duration": 15.96
+  },
+  {
+   "id": "fleurs-1854-17385700550161922834",
+   "title": "Giờ, viết tắt",
+   "file": "samples/fleurs-1854-17385700550161922834.mp3?v=2",
+   "text": "Chiếc xe đã được đưa đi khỏi hiện trường tai nạn vào khoảng 12:00 giờ GMT cùng ngày hôm đó.",
+   "duration": 8.28
+  },
+  {
+   "id": "fleurs-1765-12938753757245337215",
+   "title": "Tên nước, năm",
+   "file": "samples/fleurs-1765-12938753757245337215.mp3?v=2",
+   "text": "Kể từ khi thành lập Asunción vào năm 1537, Paraguay đã cố gắng duy trì những đặc điểm và bản sắc bản địa của mình.",
+   "duration": 14.64
+  },
+  {
+   "id": "fleurs-1722-103677662251086347",
+   "title": "Tên người, tuổi",
+   "file": "samples/fleurs-1722-103677662251086347.mp3?v=2",
+   "text": "Cuomo, 53 tuổi, bắt đầu đảm nhiệm chức vụ thống đốc từ đầu năm nay. Tháng trước, ông đã ký dự luật hợp pháp hóa hôn nhân đồng giới.",
+   "duration": 11.52
+  }
+ ]
+}

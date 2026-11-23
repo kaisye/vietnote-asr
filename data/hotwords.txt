@@ -1,0 +1,80 @@
+# Danh sách tên cho demo: "Dạng viết | cách đọc kiểu Việt, cách đọc khác" (cách đọc tuỳ chọn, ít nhất 2 âm tiết).
+# Chỉ ghi tên viết kiểu nước ngoài; tên tiếng Việt (Hòa Phát, Thế Giới Di Động) model đã ghi đúng chữ.
+# Sửa file rồi khởi động lại server.
+
+# Công nghệ, nhân vật
+Nvidia | en vi đi a, en vi đi
+Jensen Huang | gien sen hoang, gen xen hoang, gen se hoang
+Elon Musk | i lơn mớt, ê lon mớt
+Raspberry Pi | rát bơ ri pai
+OpenAI | ô pần ai, âu pần ai, ô pen ai
+ChatGPT | chát gi pi ti, chát gê pê tê
+Google | gu gồ, gu gô
+Microsoft | mai crô sốp, mai cờ rô sốp
+Apple | áp pồ
+iPhone | ai phôn
+Samsung | sam sung
+Xiaomi | xao mi, xiao mi
+Huawei | hoa vây, hoa uây
+Oppo | óp pô
+Facebook | phây búc, phết búc
+YouTube | du túp, diu túp
+TikTok | tíc tóc, tích tóc
+Netflix | nét phờ lích, nét flích
+
+# Tập đoàn, ngân hàng, viễn thông Việt Nam
+Vingroup | vin gờ rúp, vin grúp
+Vinhomes | vin hôm, vin hôm sờ
+VinFast | vin phát, vin phát xờ
+Vinmec | vin méc
+Vinamilk | vi na mín, vi na min, vi na miu
+Masan | ma xan
+Sabeco | sa bê cô
+Vietcombank | việt com băng, việt com banh
+VietinBank | viết tin băng, việt tin băng
+Techcombank | tếch com băng, téc com băng
+VPBank | vê pê băng
+MB Bank | em bê băng
+TPBank | tê pê băng
+Sacombank | sa com băng
+Agribank | a gri băng, a ri băng
+BIDV | bê i đê vê
+ACB | a xê bê
+Viettel | viết teo, việt teo, viết ten
+VNPT | vê en pê tê
+MobiFone | mô bi phôn
+Vinaphone | vi na phôn
+FPT | ép pê tê, ép bê tê
+Vietjet | việt dét, viết dét
+Vietnam Airlines | việt nam e lai, việt nam ơ lai
+Bamboo Airways | bam bu ơ quây, bam bu e quây
+
+# Gọi xe, thương mại điện tử, ví
+Grab | gờ ráp
+Xanh SM | xanh ét em, xanh ét xờ em
+Green SM | gờ rin ét em, gờ rin sm
+Shopee | sốp pi, sóp pi, sốp pe
+Lazada | la da đa, la za đa
+Tiki | ti ki
+Zalo | da lô, za lô
+ZaloPay | da lô pay, da lô pây
+MoMo
+VNPay | vê en pay, vê en pây
+
+# Xe, đồ uống, bán lẻ
+Honda | hôn đa, hon đa
+Toyota | tô y ô ta, toi ô ta
+Yamaha | da ma ha, ya ma ha
+Hyundai | huyn đai
+Mercedes | méc xê đét, mẹc xê đét
+Highlands Coffee | hai lừn cà phê, hai lân cà phê
+Starbucks | sờ ta bấc, sta bấc
+Coca-Cola | cô ca cô la
+Pepsi | pép si
+Heineken | hai nơ ken, hai ne ken
+KFC | ca ép xê
+Lotteria | lốt tê ri a
+Circle K | xơ cồ ca, sơ cồ ca
+Uniqlo | iu ni cờ lô, u ni cờ lô
+Adidas | a đi đát
+Nike | nai ki
