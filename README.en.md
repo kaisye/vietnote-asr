@@ -20,13 +20,12 @@ Try it in your browser: **https://asr.vietnote.vn** (speak into the microphone, 
 - **Small and fast on a CPU:** 83 MB (int8), about **27× faster than real time on one CPU core**, no GPU needed. Runs
   with [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx) on Linux, macOS, Windows, Android, iOS and Raspberry Pi.
 - **Fine-tunable** on your own data: PyTorch checkpoint and [icefall](https://github.com/k2-fsa/icefall) recipe
-  included, see [docs/FINETUNE.md](docs/FINETUNE.md).
+  included, see [docs/FINETUNE.en.md](docs/FINETUNE.en.md).
 
 ## Results
 
 Syllable error rate (SyER, %, lower is better). Every system was re-run on the same machine and scored with the same
-text normaliser. Details, method and caveats: [docs/BENCHMARK.md](docs/BENCHMARK.md) (in Vietnamese; the tables read
-the same).
+text normaliser. Details, method and caveats: [docs/BENCHMARK.en.md](docs/BENCHMARK.en.md).
 
 | System | Type | VietMed ⭐ | GigaSpeech2 ⭐ | FLEURS+VIVOS | Code-switching dev | English words recognised |
 |---|---|---|---|---|---|---|
@@ -50,7 +49,7 @@ pipeline 13.55** · Whisper large-v3 15.05 · PhoWhisper 20.57 · viet-asr 86M 2
 
 Against commercial APIs and audio LLMs (Gemini, GPT-audio, Soniox) on 400-utterance subsets: on code-switching speech
 VietNote streaming scores 9.54 (offline 8.40) vs Gemini 4 Argon 8.62 and Soniox 10.32, but on read speech it is far
-behind (6.45 vs 2.61 for Gemini 4 Argon). See [docs/BENCHMARK.md](docs/BENCHMARK.md).
+behind (6.45 vs 2.61 for Gemini 4 Argon). See [docs/BENCHMARK.en.md](docs/BENCHMARK.en.md).
 
 **To be clear:** larger offline models (hynt 150M) are more accurate on pure Vietnamese, and on GigaSpeech2 we trail the
 models trained on it. What sets VietNote ASR apart is streaming, English inside Vietnamese sentences, and finished text.

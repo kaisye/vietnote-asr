@@ -1,5 +1,7 @@
 # Benchmark
 
+[English](BENCHMARK.en.md) | **Tiếng Việt**
+
 Đo ngày 22–23/11/2026 trên Apple M1 Max, CPU. Mọi hệ thống được chạy lại trên cùng máy và chấm bằng cùng một bộ chuẩn
 hóa văn bản (`vnasr.text.normalize_text`, phiên bản 1.3: chữ thường, số đọc thành chữ, bỏ dấu câu), nên các con số so
 được với nhau. Chúng có thể khác số trong model card của từng tác giả vài phần mười đến 1 điểm vì khác cách chuẩn hóa

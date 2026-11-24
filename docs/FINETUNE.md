@@ -1,5 +1,7 @@
 # Fine-tune VietNote ASR trên dữ liệu của bạn
 
+[English](FINETUNE.en.md) | **Tiếng Việt**
+
 Khi nào nên fine-tune: model cần nghe tốt hơn một **giọng vùng miền**, một **lĩnh vực** (y tế, pháp lý, tổng đài…),
 các **tên riêng / thuật ngữ** lặp lại thường xuyên, hoặc một **môi trường thu âm** cụ thể. Với vài tên riêng thì dùng
 [hotword](../README.md#hotword-tên-riêng) trước, không cần train.
