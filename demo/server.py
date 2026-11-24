@@ -320,6 +320,7 @@ def main() -> None:
     p.add_argument("--threads", type=int, default=2, help="ONNX threads per decode call")
     p.add_argument("--workers", type=int, default=4, help="sessions decoded in parallel (about the vCPU count)")
     p.add_argument("--punct-onnx", action="store_true", help="use the ONNX export even when best.pt exists")
+    p.add_argument("--punct-int8", action="store_true", help="use model.int8.onnx (2x faster, F1 within 0.006)")
     p.add_argument("--method", default="modified_beam_search")
     p.add_argument("--dump", type=Path, help="save each session's received audio here")
     p.add_argument("--speaker-model", type=Path, help="sherpa-onnx speaker embedding model; enables names")
@@ -347,7 +348,7 @@ def main() -> None:
     if a.punct_dir and any((a.punct_dir / f).exists() for f in ("best.pt", "model.onnx", "onnx/model.onnx")):
         sys.path.insert(0, str(ROOT.parent / "punct"))
         from punctuate import Punctuator
-        app["punct"] = Punctuator(a.punct_dir, onnx=a.punct_onnx or None)
+        app["punct"] = Punctuator(a.punct_dir, onnx=(a.punct_onnx or a.punct_int8) or None, int8=a.punct_int8)
         app["punct"]("xin chào")  # warm up
     app["vad"] = str(a.vad) if a.vad else None
     app["dump"] = a.dump

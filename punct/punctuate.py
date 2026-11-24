@@ -15,7 +15,8 @@ MARK = {"O": "", "COMMA": ",", "PERIOD": ".", "QUESTION": "?"}
 class Punctuator:
     """model_dir holds best.pt (torch) or model.int8.onnx / model.onnx (onnxruntime, no torch needed).
     The ONNX export (export_onnx.py) is used when the directory has no best.pt or when onnx=True. fp32 ONNX gives
-    the same output as torch; int8 (int8=True) is 4x smaller but loses about 7 points of punctuation agreement."""
+    the same output as torch. The pruned-vocabulary export (prune_vocab.py) gives the same output at 399 MB; its int8
+    file (int8=True, 206 MB, about 2x faster) is within 0.006 F1 of fp32."""
 
     def __init__(self, model_dir: Path, device: str = "cpu", onnx: bool | None = None, threads: int = 2,
                  int8: bool = False):

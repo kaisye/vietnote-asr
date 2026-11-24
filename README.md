@@ -108,7 +108,7 @@ print("\n" + spoken_to_digits(rec.get_result(s).lower()))
 | `offline/int8` | xử lý file, không cần streaming | 88 MB | gấp ~38 lần |
 | `offline/fp32` | xử lý file, chính xác nhất | 280 MB | gấp ~21 lần |
 | `pytorch/pretrained.pt` | fine-tune | 311 MB | – |
-| `punct/` | dấu câu và viết hoa (XLM-RoBERTa base, ONNX) | 1,1 GB | 20–40 ms/câu |
+| `punct/` | dấu câu và viết hoa (XLM-RoBERTa base, ONNX; bản int8 206 MB) | 399 MB | 15–35 ms/câu |
 
 Cùng một bộ trọng số: bản offline nhìn được cả câu nên chính xác hơn khoảng 1 điểm SyER.
 
@@ -136,6 +136,8 @@ nói vấp ("ừm", "à") và đọc sai rồi sửa.
 
 **② Dấu câu và viết hoa** ([punct/](punct/)): XLM-RoBERTa base với hai đầu phân loại (dấu: không / phẩy / chấm / chấm hỏi;
 chữ hoa: thường / Hoa đầu / HOA HẾT / hỗn hợp như iPhone). Viết hoa đúng 97%; F1 dấu chấm 0,73, chấm hỏi 0,67, phẩy 0,56.
+Từ vựng được cắt từ 250k còn 24k token tiếng Việt và tiếng Anh (`punct/prune_vocab.py`): file 1,1 GB còn 399 MB, kết quả
+giữ nguyên. Bản `model.int8.onnx` (206 MB, nhanh gấp đôi, thêm `--punct-int8` khi chạy demo) kém fp32 dưới 0,006 F1.
 
 **③ Hotword: tên riêng** ([src/vnasr/hotwords.py](src/vnasr/hotwords.py), [data/hotwords.txt](data/hotwords.txt)): danh sách
 tên kèm cách đọc kiểu Việt, ví dụ `VinFast | vin phát`, `Nvidia | en vi đi a`. Tên được cộng điểm khi giải mã, cách đọc
