@@ -17,8 +17,8 @@ nên SyER gần như trùng với WER mà các tác giả khác báo cáo.
 | [FLEURS](https://huggingface.co/datasets/google/fleurs) vi test + [VIVOS](https://huggingface.co/datasets/AILAB-VNUHCM/vivos) test | 1.617 | 3,8 giờ | đã train trên tập train | giọng đọc |
 | Dev pha tiếng Anh | 1.600 | 4,6 giờ | cùng nguồn với dữ liệu train | 4 nguồn × 400 câu: hội thoại pha tiếng Anh (YouTube), đa vùng miền, đọc, y tế pha tiếng Anh |
 
-Model của hynt train trên VietMed_Labeled, Sub-GigaSpeech2-Vi và FLEURS (theo model card). Model card của VietASR không
-ghi dữ liệu train.
+Model của hynt train trên VietMed_Labeled, Sub-GigaSpeech2-Vi và FLEURS (theo model card). Model card của VietASR và
+viet-asr không ghi dữ liệu train.
 
 ## Kết quả (SyER %)
 
@@ -32,6 +32,7 @@ ghi dữ liệu train.
 | [Moonshine streaming tiny vi](https://huggingface.co/moonshine-ai/moonshine-streaming-tiny-vi) | streaming | 27M | 19,74 | 14,38 | 10,50 | 22,10 | 20,8% |
 | [hynt Zipformer 150M](https://huggingface.co/hynt/ZipFormer-150M-CR-CTC-RNNT-6000h) | offline | 153M | 11,90 | 7,20 | 5,14 | 10,81 | 35,5% |
 | [hynt Zipformer 30M](https://huggingface.co/hynt/Zipformer-30M-RNNT-6000h) | offline | 30M | 12,93 | 7,40 | 6,06 | 11,01 | 28,9% |
+| [viet-asr (dangvansam)](https://huggingface.co/dangvansam/viet-asr) int8 | offline | 86M | 17,33 | 14,71 | 15,21 | 16,52 | 5,0% |
 | [VietASR Zipformer 70k giờ](https://huggingface.co/zzasdf/viet_iter3_pseudo_label) | offline | 68M | 14,19 | 6,75 | 7,50 | 13,22 | 14,3% |
 | [PhoWhisper large](https://huggingface.co/vinai/PhoWhisper-large) | offline | 1,5B | 16,74 | – | 6,03 | 16,31 | 30,8% |
 | [Whisper large-v3](https://huggingface.co/openai/whisper-large-v3) | offline | 1,5B | 36,64 | – | 8,08 | 15,21 | 67,8% |
@@ -39,6 +40,31 @@ ghi dữ liệu train.
 ⭐ zero-shot với VietNote ASR. Model streaming được đưa âm thanh vào từng 100 ms như khi nghe micro. Giải mã: beam
 search 4 nhánh (modified beam search) cho các model transducer. Whisper/PhoWhisper chưa chạy trên GigaSpeech2. Bản int8
 mới đo trên FLEURS+VIVOS.
+
+## Văn bản hoàn chỉnh (FLEURS, chấm cả chữ hoa, dấu câu, chữ số)
+
+Lời gốc FLEURS giữ nguyên câu viết (chữ hoa, dấu câu, chữ số), nên chấm được đầu ra hoàn chỉnh như cách
+[viet-asr](https://github.com/dangvansam/viet-asr) báo cáo. 857 câu test, so khớp phân biệt hoa thường, Unicode NFC
+(`scripts/bench/score_written.py` trong repo phát triển).
+
+- **WER đầy đủ:** dấu câu là một token riêng, thiếu một dấu phẩy là một lỗi.
+- **WER bỏ dấu câu:** vẫn tính chữ hoa và cách viết số.
+- **SyER:** chuẩn hóa như các bảng trên, chỉ đo nghe đúng chữ.
+
+| Hệ thống | Đầu ra | WER đầy đủ | WER bỏ dấu câu | SyER |
+|---|---|---|---|---|
+| Soniox (API) | tự định dạng | **10,09** | **7,08** | **3,58** |
+| **VietNote offline + ITN + dấu câu** | 3 bước | 12,42 | 9,34 | 5,72 |
+| **VietNote streaming + ITN + dấu câu** | 3 bước | 13,55 | 10,49 | 6,89 |
+| Whisper large-v3 | tự định dạng | 15,05 | 11,44 | 7,85 |
+| Moonshine base vi | tự định dạng | 17,01 | 13,56 | 9,53 |
+| PhoWhisper large | tự định dạng | 20,57 | 17,17 | 6,48 |
+| viet-asr 86M int8 | tự định dạng | 21,08 | 18,95 | 15,20 |
+| hynt Zipformer 30M streaming | chữ thường, không dấu | 24,61 | 18,71 | 8,30 |
+| hynt Zipformer 150M | CHỮ HOA, không dấu | 100,47 | 102,25 | 5,45 |
+
+viet-asr ra văn bản đẹp nhưng bỏ sót nhiều từ, nhất là tên riêng nước ngoài (SyER 15,2%), nên vẫn đứng sau các model
+nghe đúng chữ hơn. Model hynt nghe tốt (SyER 5,45%) nhưng không định dạng, nên cách chấm này không công bằng với nó.
 
 ## So với model thương mại và LLM nghe được (tập con 400 câu)
 
