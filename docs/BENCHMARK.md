@@ -45,7 +45,7 @@ mới đo trên FLEURS+VIVOS.
 
 Lời gốc FLEURS giữ nguyên câu viết (chữ hoa, dấu câu, chữ số), nên chấm được đầu ra hoàn chỉnh như cách
 [viet-asr](https://github.com/dangvansam/viet-asr) báo cáo. 857 câu test, so khớp phân biệt hoa thường, Unicode NFC
-(`scripts/bench/score_written.py` trong repo phát triển).
+(`scripts/score_written.py`).
 
 - **WER đầy đủ:** dấu câu là một token riêng, thiếu một dấu phẩy là một lỗi.
 - **WER bỏ dấu câu:** vẫn tính chữ hoa và cách viết số.

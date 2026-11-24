@@ -8,8 +8,8 @@ viet-asr's README does. Three numbers per system, all case-sensitive Unicode NFC
 Systems listed with --pipeline get our post-processing first: ITN (spoken_to_digits), the punctuation/casing model,
 hotwords; the others are scored on their raw output.
 
-    python scripts/bench/score_written.py --refs data/ext/fleurs/refs.jsonl --hyps data/ext/all/hyps \
-        --punct-dir exp/punct_small --pipeline ours-avg45-streaming ours-avg45-offline
+    python scripts/score_written.py --refs fleurs_refs.jsonl --hyps hyps \
+        --punct-dir models/punct --pipeline my-system
 """
 
 import argparse
@@ -21,7 +21,7 @@ from pathlib import Path
 
 from vnasr.text import normalize_text
 
-ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(__file__).resolve().parents[1]
 PUNCT = re.compile(r"([,.?!;:…\"“”()\[\]])")
 
 
@@ -60,14 +60,14 @@ def main():
     p.add_argument("--pipeline", nargs="*", default=[], help="systems that get ITN + punctuation + hotwords")
     p.add_argument("--punct-dir", type=Path)
     p.add_argument("--punct-int8", action="store_true")
-    p.add_argument("--hotwords", type=Path, default=ROOT / "data/voice/hotwords.txt")
+    p.add_argument("--hotwords", type=Path, default=ROOT / "data/hotwords.txt")
     p.add_argument("--json", type=Path)
     a = p.parse_args()
 
     refs = {r["id"]: r["text"] for r in map(json.loads, a.refs.open(encoding="utf-8"))}
     finish = None
     if a.pipeline:
-        sys.path.insert(0, str(ROOT / "scripts/punct"))
+        sys.path.insert(0, str(ROOT / "punct"))
         from punctuate import Punctuator
         from vnasr.hotwords import load as load_hot
         from vnasr.itn import spoken_to_digits
