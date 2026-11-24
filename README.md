@@ -1,5 +1,7 @@
 # VietNote ASR
 
+[English](README.en.md) | **Tiếng Việt**
+
 **Nhận dạng giọng nói tiếng Việt pha tiếng Anh, chạy trực tiếp (streaming) trên CPU.**
 
 Model: **[VietNote-Zipformer-78M-Streaming](https://huggingface.co/Kaisye/VietNote-Zipformer-78M-Streaming)**, Zipformer transducer 78M tham số.
@@ -11,11 +13,11 @@ Model: **[VietNote-Zipformer-78M-Streaming](https://huggingface.co/Kaisye/VietNo
 Thử ngay trên trình duyệt: **https://asr.vietnote.vn** (nói vào micro, đọc kịch bản có sẵn, hoặc nghe đoạn mẫu).
 
 - **Streaming:** chữ hiện ra trong lúc bạn nói, mỗi bước 640 ms âm thanh.
-- **Tiếng Việt pha tiếng Anh (code-switching):** nhận đúng khoảng **75% từ tiếng Anh** trong câu nói pha, gấp 2–5 lần
-  các model tiếng Việt mã nguồn mở khác mà chúng tôi đã thử.
+- **Tiếng Việt pha tiếng Anh (code-switching):** nhận đúng khoảng **75% từ tiếng Anh** trong câu nói pha, gấp 2–15 lần
+  các model tiếng Việt mã nguồn mở khác mà chúng tôi đã thử, gần bằng API thương mại Soniox (78%).
 - **Văn bản hoàn chỉnh:** số viết bằng chữ số (1,5 tỷ · 250.000 · 15/12 · 0912 345 678 · tỷ số 2-1), dấu câu, viết hoa,
   tên thương hiệu đúng chính tả; hiểu cả khi người nói vấp hoặc sửa giữa chừng ("ba… à không, bốn triệu" → 4 triệu).
-- **Nhẹ, chạy trên CPU:** 83 MB (int8), không cần GPU; chạy bằng [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx)
+- **Nhẹ, chạy trên CPU:** 83 MB (int8), nhanh gấp khoảng **27 lần thời gian thực trên 1 lõi CPU**, không cần GPU; chạy bằng [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx)
   trên Linux, macOS, Windows, Android, iOS, Raspberry Pi.
 - **Fine-tune được** trên dữ liệu của bạn: checkpoint PyTorch và recipe [icefall](https://github.com/k2-fsa/icefall)
   đi kèm, xem [docs/FINETUNE.md](docs/FINETUNE.md).
@@ -32,6 +34,7 @@ Chi tiết, cách đo và lưu ý: [docs/BENCHMARK.md](docs/BENCHMARK.md).
 | Moonshine streaming tiny vi | streaming, 27M | 19,74 | 14,38 | 10,50 | 22,10 | 20,8% |
 | hynt Zipformer 150M | offline | 11,90 | 7,20 | 5,14 | 10,81 | 35,5% |
 | hynt Zipformer 30M | offline | 12,93 | 7,40 | 6,06 | 11,01 | 28,9% |
+| viet-asr 86M (int8) | offline | 17,33 | 14,71 | 15,21 | 16,52 | 5,0% |
 | VietASR Zipformer (70k giờ) | offline | 14,19 | 6,75 | 7,50 | 13,22 | 14,3% |
 | PhoWhisper large | offline | 16,74 | – | 6,03 | 16,31 | 30,8% |
 | Whisper large-v3 | offline | 36,64 | – | 8,08 | 15,21 | 67,8% |
@@ -39,8 +42,12 @@ Chi tiết, cách đo và lưu ý: [docs/BENCHMARK.md](docs/BENCHMARK.md).
 ⭐ Zero-shot với VietNote ASR (không dùng phần nào của bộ này để train). hynt train trên VietMed_Labeled, Sub-GigaSpeech2
 và FLEURS (theo model card của họ). VietNote ASR có dùng tập train của FLEURS và VIVOS; bộ dev cùng nguồn với dữ liệu train.
 
-So với API thương mại và LLM nghe được (Gemini, GPT-audio, Soniox) trên tập con 400 câu: ngang Gemini 4 Argon ở câu pha
-tiếng Anh (9,54 so với 8,62; bản offline 8,40), nhưng kém xa ở giọng đọc chuẩn (6,45 so với 2,61). Xem
+**Văn bản hoàn chỉnh** (857 câu FLEURS, chấm phân biệt hoa thường, dấu câu tính là token, so với câu viết gốc): Soniox
+10,09 · **VietNote offline + ITN + dấu câu 12,42** · **VietNote streaming + 3 bước 13,55** · Whisper large-v3 15,05 ·
+PhoWhisper 20,57 · viet-asr 86M 21,08.
+
+So với API thương mại và LLM nghe được (Gemini, GPT-audio, Soniox) trên tập con 400 câu: ở câu pha tiếng Anh, VietNote
+streaming 9,54 (offline 8,40), Gemini 4 Argon 8,62, Soniox 10,32; ở giọng đọc chuẩn thì kém xa (6,45 so với 2,61). Xem
 [docs/BENCHMARK.md](docs/BENCHMARK.md#so-với-model-thương-mại-và-llm-nghe-được-tập-con-400-câu).
 
 **Nói thẳng:** model offline lớn hơn (hynt 150M) chính xác hơn ở tiếng Việt thuần, và trên GigaSpeech2 chúng tôi kém các
@@ -173,7 +180,7 @@ Một VM 4 vCPU phục vụ thoải mái 8–10 người nói cùng lúc (đo th
 src/vnasr/      ITN, hotword, chuẩn hóa văn bản, chấm điểm (SyER/CER)
 examples/       nhận dạng file, micro
 demo/           máy chủ web + giao diện (asr.vietnote.vn)
-punct/          model dấu câu: suy luận, xuất ONNX, train
+punct/          model dấu câu: suy luận, xuất ONNX, cắt từ vựng, train
 recipe/         tạo recipe icefall, chuẩn bị dữ liệu, fine-tune, xuất ONNX
 scripts/        tải model, lượng tử hóa int8, đánh giá
 deploy/         triển khai lên VM
@@ -200,12 +207,9 @@ Code và trọng số: [Apache-2.0](LICENSE). Model dấu câu dựa trên
 
 ---
 
-## English summary
+## English
 
-VietNote ASR (VietNote-Zipformer-78M-Streaming) is a **streaming Vietnamese–English (code-switching) speech recognizer** that runs on a CPU. It is a
-77.7M-parameter causal Zipformer transducer (icefall), exported to ONNX for sherpa-onnx, plus a text pipeline that turns
-the raw output into finished text: rule-based ITN for numbers, an XLM-R punctuation/casing model, and a hotword list for
-brand names. On our code-switching dev set it recognises ~75% of English words (2–5× other open Vietnamese models); on
-the zero-shot VietMed test it reaches 13.9% SyER, the best of the streaming models we tested. It is weaker than larger
-offline models on pure Vietnamese (e.g. GigaSpeech2). Weights and code are Apache-2.0; a PyTorch checkpoint and an
-icefall fine-tuning recipe are included. Live demo: https://asr.vietnote.vn
+Full English README: **[README.en.md](README.en.md)**. VietNote ASR (VietNote-Zipformer-78M-Streaming) is a streaming
+Vietnamese–English code-switching speech recognizer: 78M-parameter Zipformer transducer, 83 MB int8, ~27× real time on
+one CPU core, ~75% of English words recognised in mixed speech, finished text with digits, punctuation and casing.
+Apache-2.0; PyTorch checkpoint and fine-tuning recipe included. Live demo: https://asr.vietnote.vn
