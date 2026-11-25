@@ -1,0 +1,19 @@
+VietNote ASR
+Copyright 2026 Kaisye
+
+This product includes software and model weights developed by Kaisye
+(https://github.com/kaisye/vietnote-asr,
+ https://huggingface.co/Kaisye/VietNote-Zipformer-78M-Streaming).
+
+Licensed under the Apache License, Version 2.0. Under Section 4(d) of the
+License, any redistribution of this work or of a derivative work (including
+fine-tuned, quantised, converted or merged model weights) must include a
+readable copy of this NOTICE file.
+
+Third-party components:
+- Punctuation model fine-tuned from XLM-RoBERTa base (MIT License,
+  https://huggingface.co/FacebookAI/xlm-roberta-base).
+- Model architecture and training recipe from icefall (Apache-2.0,
+  https://github.com/k2-fsa/icefall).
+- Demo audio samples from FLEURS (CC BY 4.0,
+  https://huggingface.co/datasets/google/fleurs).

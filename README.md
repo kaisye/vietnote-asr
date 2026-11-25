@@ -197,11 +197,21 @@ Code và trọng số: [Apache-2.0](LICENSE). Model dấu câu dựa trên
 [icefall](https://github.com/k2-fsa/icefall), [lhotse](https://github.com/lhotse-speech/lhotse) và
 [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx). Cảm ơn tác giả các bộ dữ liệu và model dùng để so sánh.
 
+### Cách trích dẫn
+
+Nếu bạn dùng, fine-tune hoặc phân phối lại VietNote ASR (kể cả trọng số đã fine-tune, lượng tử hóa hay chuyển định
+dạng), vui lòng:
+- giữ file [NOTICE](NOTICE) và [LICENSE](LICENSE) đi kèm (Apache-2.0 điều 4(d) yêu cầu giữ NOTICE);
+- ghi rõ trong README hoặc model card của bạn: *"Dựa trên VietNote ASR (https://github.com/kaisye/vietnote-asr)"*;
+- trích dẫn trong bài báo hoặc báo cáo:
+
 ```bibtex
 @misc{vietnote_asr_2026,
-  title  = {VietNote ASR: streaming Vietnamese--English code-switching speech recognition},
-  year   = {2026},
-  url    = {https://github.com/kaisye/vietnote-asr}
+  author       = {Kaisye},
+  title        = {{VietNote ASR}: Streaming {Vietnamese}--{English} Code-Switching Speech Recognition},
+  year         = {2026},
+  howpublished = {\url{https://github.com/kaisye/vietnote-asr}},
+  note         = {Model: VietNote-Zipformer-78M-Streaming, \url{https://huggingface.co/Kaisye/VietNote-Zipformer-78M-Streaming}}
 }
 ```
 

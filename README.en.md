@@ -203,10 +203,19 @@ Code and weights: [Apache-2.0](LICENSE). The punctuation model is fine-tuned fro
 [sherpa-onnx](https://github.com/k2-fsa/sherpa-onnx). Thanks to the authors of the datasets and of the models we compare
 against.
 
+### How to cite
+
+If you use, fine-tune or redistribute VietNote ASR (including fine-tuned, quantised or converted weights), please:
+- keep the [NOTICE](NOTICE) and [LICENSE](LICENSE) files with it (Section 4(d) of Apache-2.0 requires the NOTICE);
+- state in your README or model card: *"Based on VietNote ASR (https://github.com/kaisye/vietnote-asr)"*;
+- cite it in papers or reports:
+
 ```bibtex
 @misc{vietnote_asr_2026,
-  title  = {VietNote ASR: streaming Vietnamese--English code-switching speech recognition},
-  year   = {2026},
-  url    = {https://github.com/kaisye/vietnote-asr}
+  author       = {Kaisye},
+  title        = {{VietNote ASR}: Streaming {Vietnamese}--{English} Code-Switching Speech Recognition},
+  year         = {2026},
+  howpublished = {\url{https://github.com/kaisye/vietnote-asr}},
+  note         = {Model: VietNote-Zipformer-78M-Streaming, \url{https://huggingface.co/Kaisye/VietNote-Zipformer-78M-Streaming}}
 }
 ```
