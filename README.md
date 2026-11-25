@@ -8,7 +8,7 @@ Model: **[VietNote-Zipformer-78M-Streaming](https://huggingface.co/Kaisye/VietNo
 
 [![Demo](https://img.shields.io/badge/demo-asr.vietnote.vn-0f6e56)](https://asr.vietnote.vn)
 [![Models](https://img.shields.io/badge/%F0%9F%A4%97%20models-Hugging%20Face-yellow)](https://huggingface.co/Kaisye/VietNote-Zipformer-78M-Streaming)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![Code: Apache-2.0](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE) [![Weights: CC BY-NC-SA 4.0](https://img.shields.io/badge/weights-CC%20BY--NC--SA%204.0-lightgrey)](LICENSE-MODEL)
 
 Thử ngay trên trình duyệt: **https://asr.vietnote.vn** (nói vào micro, đọc kịch bản có sẵn, hoặc nghe đoạn mẫu).
 
@@ -191,7 +191,13 @@ Chạy test: `pip install -e ".[dev]" && pytest`.
 
 ## Giấy phép và ghi công
 
-Code và trọng số: [Apache-2.0](LICENSE). Model dấu câu dựa trên
+- **Code:** [Apache-2.0](LICENSE).
+- **Trọng số** (model ASR, checkpoint PyTorch, model dấu câu): [CC BY-NC-SA 4.0](LICENSE-MODEL), **chỉ dùng phi
+  thương mại**; bản fine-tune hoặc chuyển đổi phải giữ cùng giấy phép. Lý do: một phần dữ liệu train (VIVOS, Bud500)
+  có giấy phép CC BY-NC-SA. Muốn dùng thương mại, liên hệ qua [Issues](https://github.com/kaisye/vietnote-asr/issues).
+  Trọng số tải trước ngày 25/11/2026 được phát hành theo Apache-2.0.
+
+Model dấu câu dựa trên
 [XLM-RoBERTa base](https://huggingface.co/FacebookAI/xlm-roberta-base) (MIT). Âm thanh mẫu trong demo từ
 [FLEURS](https://huggingface.co/datasets/google/fleurs) (CC BY 4.0). Xây dựng trên [k2](https://github.com/k2-fsa/k2),
 [icefall](https://github.com/k2-fsa/icefall), [lhotse](https://github.com/lhotse-speech/lhotse) và
@@ -201,7 +207,7 @@ Code và trọng số: [Apache-2.0](LICENSE). Model dấu câu dựa trên
 
 Nếu bạn dùng, fine-tune hoặc phân phối lại VietNote ASR (kể cả trọng số đã fine-tune, lượng tử hóa hay chuyển định
 dạng), vui lòng:
-- giữ file [NOTICE](NOTICE) và [LICENSE](LICENSE) đi kèm (Apache-2.0 điều 4(d) yêu cầu giữ NOTICE);
+- giữ file [NOTICE](NOTICE), [LICENSE](LICENSE) và [LICENSE-MODEL](LICENSE-MODEL) đi kèm;
 - ghi rõ trong README hoặc model card của bạn: *"Dựa trên VietNote ASR (https://github.com/kaisye/vietnote-asr)"*;
 - trích dẫn trong bài báo hoặc báo cáo:
 
@@ -222,4 +228,4 @@ dạng), vui lòng:
 Full English README: **[README.en.md](README.en.md)**. VietNote ASR (VietNote-Zipformer-78M-Streaming) is a streaming
 Vietnamese–English code-switching speech recognizer: 78M-parameter Zipformer transducer, 83 MB int8, ~27× real time on
 one CPU core, ~75% of English words recognised in mixed speech, finished text with digits, punctuation and casing.
-Apache-2.0; PyTorch checkpoint and fine-tuning recipe included. Live demo: https://asr.vietnote.vn
+Code Apache-2.0, weights CC BY-NC-SA 4.0 (non-commercial); PyTorch checkpoint and fine-tuning recipe included. Live demo: https://asr.vietnote.vn

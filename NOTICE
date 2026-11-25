@@ -5,10 +5,14 @@ This product includes software and model weights developed by Kaisye
 (https://github.com/kaisye/vietnote-asr,
  https://huggingface.co/Kaisye/VietNote-Zipformer-78M-Streaming).
 
-Licensed under the Apache License, Version 2.0. Under Section 4(d) of the
-License, any redistribution of this work or of a derivative work (including
-fine-tuned, quantised, converted or merged model weights) must include a
-readable copy of this NOTICE file.
+Licensing:
+- Source code: Apache License 2.0 (LICENSE). Under Section 4(d), any
+  redistribution of the code or of a derivative work must include a readable
+  copy of this NOTICE file.
+- Model weights: CC BY-NC-SA 4.0 (LICENSE-MODEL). Non-commercial use only;
+  fine-tuned, quantised, converted or merged weights must carry the same
+  licence and credit VietNote ASR. Some training data is licensed
+  CC BY-NC-SA 4.0. For commercial use, contact the author.
 
 Third-party components:
 - Punctuation model fine-tuned from XLM-RoBERTa base (MIT License,

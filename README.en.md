@@ -8,7 +8,7 @@ Model: **[VietNote-Zipformer-78M-Streaming](https://huggingface.co/Kaisye/VietNo
 
 [![Demo](https://img.shields.io/badge/demo-asr.vietnote.vn-0f6e56)](https://asr.vietnote.vn)
 [![Models](https://img.shields.io/badge/%F0%9F%A4%97%20models-Hugging%20Face-yellow)](https://huggingface.co/Kaisye/VietNote-Zipformer-78M-Streaming)
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE)
+[![Code: Apache-2.0](https://img.shields.io/badge/code-Apache--2.0-blue)](LICENSE) [![Weights: CC BY-NC-SA 4.0](https://img.shields.io/badge/weights-CC%20BY--NC--SA%204.0-lightgrey)](LICENSE-MODEL)
 
 Try it in your browser: **https://asr.vietnote.vn** (speak into the microphone, read a prepared script, or play a sample).
 
@@ -196,7 +196,14 @@ Run the tests: `pip install -e ".[dev]" && pytest`.
 
 ## License and credits
 
-Code and weights: [Apache-2.0](LICENSE). The punctuation model is fine-tuned from
+- **Code:** [Apache-2.0](LICENSE).
+- **Weights** (ASR models, PyTorch checkpoint, punctuation model): [CC BY-NC-SA 4.0](LICENSE-MODEL), **non-commercial
+  use only**; fine-tuned or converted weights must keep the same licence. Reason: part of the training data (VIVOS,
+  Bud500) is licensed CC BY-NC-SA. For commercial use, get in touch via
+  [Issues](https://github.com/kaisye/vietnote-asr/issues). Weights downloaded before 25 Nov 2026 were released under
+  Apache-2.0.
+
+The punctuation model is fine-tuned from
 [XLM-RoBERTa base](https://huggingface.co/FacebookAI/xlm-roberta-base) (MIT). Demo audio samples are from
 [FLEURS](https://huggingface.co/datasets/google/fleurs) (CC BY 4.0). Built on [k2](https://github.com/k2-fsa/k2),
 [icefall](https://github.com/k2-fsa/icefall), [lhotse](https://github.com/lhotse-speech/lhotse) and
@@ -206,7 +213,7 @@ against.
 ### How to cite
 
 If you use, fine-tune or redistribute VietNote ASR (including fine-tuned, quantised or converted weights), please:
-- keep the [NOTICE](NOTICE) and [LICENSE](LICENSE) files with it (Section 4(d) of Apache-2.0 requires the NOTICE);
+- keep the [NOTICE](NOTICE), [LICENSE](LICENSE) and [LICENSE-MODEL](LICENSE-MODEL) files with it;
 - state in your README or model card: *"Based on VietNote ASR (https://github.com/kaisye/vietnote-asr)"*;
 - cite it in papers or reports:
 
